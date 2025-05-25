@@ -16,7 +16,7 @@ st.set_page_config(page_title="Phishing URL Detector", page_icon="🔒", layout=
 # Load and preprocess data
 @st.cache_data
 def load_data():
-    data = pd.read_csv("E:\\dataset_phishing_updated.csv")
+    data = pd.read_csv("dataset_phishing_updated.csv")
     data['status'] = data['status'].map({'phishing': 1, 'legitimate': 0})
     return data
 

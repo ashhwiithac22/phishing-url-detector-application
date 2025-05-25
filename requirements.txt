@@ -1,6 +1,6 @@
 streamlit>=1.29.0
 pandas>=2.0.3
-scikit-learn==1.2.2  # Critical fix
+scikit-learn  # Critical fix
 numpy>=1.24.0
 tldextract>=3.4.0
 joblib>=1.2.0

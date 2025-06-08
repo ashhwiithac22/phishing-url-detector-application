@@ -1,4 +1,5 @@
 Phishing URL Detection Web Application 🔐
+
 A Python-based web application that detects whether a URL is legitimate ✅ or phishing ❌ using machine learning. Built with Streamlit for an intuitive UI and trained with a feature-rich dataset of URLs.
 
 Features
@@ -63,17 +64,22 @@ Clone the repository
 
 
 git clone https://github.com/yourusername/phishing-url-detector.git
+
 cd phishing-url-detector
+
 Install dependencies
 
 
 Edit
 pip install -r requirements.txt
+
 Run the application
 
 
 streamlit run app.py
+
 Usage
+
 Open the app in your browser using the link Streamlit provides
 
 Paste any URL into the input box

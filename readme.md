@@ -1,63 +1,106 @@
-# Phishing Website Detection System
+Phishing URL Detection Web Application 🔐
+A Python-based web application that detects whether a URL is legitimate ✅ or phishing ❌ using machine learning. Built with Streamlit for an intuitive UI and trained with a feature-rich dataset of URLs.
 
-A Python-based web application to detect phishing websites using machine learning techniques. This tool analyzes URLs based on several key features and predicts whether a given website is legitimate or a phishing attempt.
+Features
+1. URL Classification
+Predicts whether a given URL is legitimate or phishing
 
----
+Uses a trained machine learning model (Logiatic regression and Linear Regression)
 
-## Features
+Highlights risky patterns commonly used in phishing links
 
-### 1. URL-Based Feature Extraction
-- Extracts over 30 URL-related features automatically
-- Includes URL length, presence of '@', use of IP address, redirections, SSL certificate info, etc.
+2. Feature Extraction
+Extracts over 30 lexical, domain-based, and content-based features from the URL
 
-### 2. Phishing Detection Model
-- Trained machine learning model using algorithms such as Random Forest and Logistic Regression
-- Fast and accurate predictions
-- Supports batch prediction and real-time URL checks
+Key features include:
 
-### 3. Streamlit Web Interface
-- Clean and interactive web UI
-- Input any URL to check for phishing activity
-- Displays results and a breakdown of analyzed features
 
-### 4. Modular and Extendable Design
-- Feature extraction, model prediction, and UI are modularized
-- Easy to integrate with other detection systems or APIs
+URL length
 
----
+Use of '@' symbols, redirections, subdomains
 
-## Project Structure
-project phishing/
-├──analysis.py
-├──main.py 
+HTTPS usage
 
-## Setup and Installation
+3. Interactive Web Interface
+Built with Streamlit for fast and user-friendly interaction
 
-### 1. Clone the Repository
-git clone https://github.com/yourusername/phishing-detector.git
-cd phishing-detector
+Simple textbox to enter any URL
 
-Install Dependencies
+Real-time prediction with explanation of prediction confidence
+
+4. Model Training Script
+Train your own model using the provided phishing_dataset.csv
+
+Evaluate accuracy, precision, recall, and F1-score
+
+Save the trained model as a .pkl file for deployment
+
+Project Structure
+
+phishing_detector_app/
+
+├── app.py                  # Streamlit main application
+
+├── model/
+
+│   ├── phishing_model.pkl  # Trained ML model
+
+│   └── train_model.py      # Script to train the model
+
+├── utils/
+
+│   └── feature_extractor.py  # Feature engineering and URL parsing logic
+
+├── data/
+
+│   └── phishing_dataset.csv  # Training dataset
+
+├── requirements.txt        # All required Python libraries
+
+└── README.md               # Project documentation
+Setup and Installation
+Clone the repository
+
+
+git clone https://github.com/yourusername/phishing-url-detector.git
+cd phishing-url-detector
+Install dependencies
+
+
+Edit
 pip install -r requirements.txt
+Run the application
 
-Run the Application
+
 streamlit run app.py
-
 Usage
-URL Classification
-Launch the web interface
+Open the app in your browser using the link Streamlit provides
 
-Enter any website URL into the input field
+Paste any URL into the input box
 
-Click the "Predict" button to receive a result:
+Click “Check URL” to get prediction and risk assessment
 
-Legitimate
+Results will show:
 
-Phishing
+URL Status: ✅ Legitimate or ❌ Phishing
 
-Feature Display
-The application may also show key features such as:
-Presence of ‘https’
-Number of subdomains
-Domain age
-Length and structure of the URL
+Confidence Score
+
+Feature contributions (optional if using SHAP or explainable models)
+
+Requirements
+Python 3.8 or higher
+
+Libraries:
+
+scikit-learn
+
+pandas
+
+numpy
+
+streamlit
+
+
+joblib
+

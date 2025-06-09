@@ -93,6 +93,5 @@ Requirements
 
      streamlit
 
-
-      joblib
+     joblib
 

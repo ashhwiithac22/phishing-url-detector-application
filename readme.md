@@ -38,75 +38,61 @@ Save the trained model as a .pkl file for deployment
 
 Project Structure
 
-phishing_detector_app/
+    phishing_detector_app/
 
-├── app.py                  # Streamlit main application
+       ├── app.py                  # Streamlit main application
 
-├── model/
+       ├── main.py
 
-│   ├── phishing_model.pkl  # Trained ML model
+       ├── requirements.txt        # All required Python libraries
 
-│   └── train_model.py      # Script to train the model
+      └── README.md               # Project documentation
 
-├── utils/
-
-│   └── feature_extractor.py  # Feature engineering and URL parsing logic
-
-├── data/
-
-│   └── phishing_dataset.csv  # Training dataset
-
-├── requirements.txt        # All required Python libraries
-
-└── README.md               # Project documentation
 Setup and Installation
-Clone the repository
+1.Clone the repository
 
 
-git clone https://github.com/yourusername/phishing-url-detector.git
+    git clone https://github.com/yourusername/phishing-url-detector.git
 
-cd phishing-url-detector
+    cd phishing-url-detector
 
-Install dependencies
-
-
-Edit
-pip install -r requirements.txt
-
-Run the application
+2.Install dependencies
 
 
-streamlit run app.py
+    pip install -r requirements.txt
+
+3.Run the application
+
+
+    streamlit run app.py
 
 Usage
 
-Open the app in your browser using the link Streamlit provides
+1.Open the app in your browser using the link Streamlit provides
 
-Paste any URL into the input box
+2.Paste any URL into the input box
 
-Click “Check URL” to get prediction and risk assessment
+3.Click “Check URL” to get prediction and risk assessment
 
 Results will show:
 
 URL Status: ✅ Legitimate or ❌ Phishing
 
-Confidence Score
-
-Feature contributions (optional if using SHAP or explainable models)
 
 Requirements
-Python 3.8 or higher
 
-Libraries:
+     Python 3.8 or higher
 
-scikit-learn
+     Libraries:
 
-pandas
+     scikit-learn
 
-numpy
+     pandas
 
-streamlit
+     numpy
+
+     streamlit
 
 
-joblib
+      joblib
 

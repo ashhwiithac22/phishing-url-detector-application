@@ -1,40 +1,32 @@
-Phishing URL Detection Web Application 🔐
+## Phishing URL Detection Web Application 🔐
 
-A Python-based web application that detects whether a URL is legitimate ✅ or phishing ❌ using machine learning. Built with Streamlit for an intuitive UI and trained with a feature-rich dataset of URLs.
+- A Python-based web application that detects whether a URL is legitimate ✅ or phishing ❌ using machine learning.
+-  Built with Streamlit for an intuitive UI and trained with a feature-rich dataset of URLs.
 
-Features
+## Features
 1. URL Classification
-Predicts whether a given URL is legitimate or phishing
-
-Uses a trained machine learning model (Logiatic regression and Linear Regression)
-
-Highlights risky patterns commonly used in phishing links
+- Predicts whether a given URL is legitimate or phishing
+- Uses a trained machine learning model (Logiatic regression and Linear Regression
+- Highlights risky patterns commonly used in phishing links
 
 2. Feature Extraction
-Extracts over 30 lexical, domain-based, and content-based features from the URL
+- Extracts over 30 lexical, domain-based, and content-based features from the URL
 
 Key features include:
 
-
-URL length
-
-Use of '@' symbols, redirections, subdomains
-
-HTTPS usage
+- URL length
+- Use of '@' symbols, redirections, subdomains
+- HTTPS usage
 
 3. Interactive Web Interface
-Built with Streamlit for fast and user-friendly interaction
-
-Simple textbox to enter any URL
-
-Real-time prediction with explanation of prediction confidence
+- Built with Streamlit for fast and user-friendly interaction
+- Simple textbox to enter any URL
+- Real-time prediction with explanation of prediction confidence
 
 4. Model Training Script
-Train your own model using the provided phishing_dataset.csv
-
-Evaluate accuracy, precision, recall, and F1-score
-
-Save the trained model as a .pkl file for deployment
+- Train your own model using the provided phishing_dataset.csv
+- Evaluate accuracy, precision, recall, and F1-score
+- Save the trained model as a .pkl file for deployment
 
 Project Structure
 
@@ -66,7 +58,7 @@ Setup and Installation
 
     streamlit run app.py
 
-Usage
+## Usage
 
 1.Open the app in your browser using the link Streamlit provides
 

@@ -72,7 +72,7 @@ URL Status: ✅ Legitimate or ❌ Phishing
 
 
 Requirements
-
+```
      Python 3.8 or higher
 
      Libraries:
@@ -86,4 +86,7 @@ Requirements
      streamlit
 
      joblib
+```
+---
+🌐 **Live Demo:** [Phishing URL detection Web App](https://phishing-url-detector-application.streamlit.app/)
 

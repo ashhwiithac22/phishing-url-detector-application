@@ -1,113 +1,205 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import statsmodels.api as sm
-from statsmodels.tsa.arima.model import ARIMA
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-from sklearn.metrics import mean_squared_error, r2_score
-import numpy as np
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-df = pd.read_csv("E:\\dataset_phishing_updated.csv")
-'''
-print(df.head())
-print(df.describe())
-print(df.isnull().sum())
-print(df.duplicated()) 
-print(df.dtypes)
-df['Timestamp'] = pd.to_datetime(df['Timestamp'], dayfirst=True, errors='coerce')
-df['year'] = df['Timestamp'].dt.year
-df['month'] = df['Timestamp'].dt.month
-df['day'] = df['Timestamp'].dt.day
-df['hour'] = df['Timestamp'].dt.hour
-#Distribution of target variable(status)
-sns.set(style="whitegrid")
-plt.figure(figsize=(6, 4))
-sns.countplot(data=df, x='status', hue='status', palette='coolwarm', legend=False)
-plt.title("Distribution of Phishing Status")
-plt.xlabel("Phishing Status")
-plt.ylabel("Count")
-plt.show() 
-print(df['status'].value_counts())
-#indicates the url length is between 0-200(shorter url length)
-plt.figure(figsize=(6, 4))
-sns.histplot(df['length_url'], bins=30, kde=True, color='blue')
-plt.title("Distribution of URL Lengths")
-plt.xlabel("URL Length")
-plt.ylabel("Frequency")
-plt.show()
-plt.figure(figsize=(12, 8))
-sns.heatmap(df.select_dtypes(include=['number']).corr(), annot=False, cmap="coolwarm")
-plt.title("Correlation Heatmap")
-plt.show() 
-#lower page rank indicates phishing and higher page rank indicates legitimate
-plt.figure(figsize=(6, 4))
-sns.boxplot(data=df, x='status', y='page_rank')
-plt.title("Page Rank vs. Phishing Status")
-plt.xlabel("Phishing Status")
-plt.ylabel("Page Rank")
-plt.show()
-#phishing url contains more dots(outliers will be high) whereas legitimate url contains fewer dots(outliers will be less)
-plt.figure(figsize=(6, 4))
-sns.boxplot(data=df, x='status', y='nb_dots')
-plt.title("Number of Dots in URL vs. Phishing Status")
-plt.xlabel("Phishing Status")
-plt.ylabel("Number of Dots")
-plt.show()
-print(f"Maximum number of scams: {df['Number_of_Scams'].max()}")
-print(f"Maximum web traffic: {df['web_traffic'].max()}")
-print(f"Longest url length: {df['length_url'].max()}")
-print(f"Highest ratio which may indicate phishing is : {df['ratio_digits_url'].max()}")
-print(df["Timestamp"].head())
-print(df["Timestamp"].dtype)
-print(df["Timestamp"].isna().sum())
-print(df.columns)
-'''
-
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
+import seaborn as sns
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-# Dropping non-numeric columns
-df_numeric = df.drop(columns=["url", "status"], errors='ignore')
-original_columns = df_numeric.columns
-# Standardizing the features
-scaler = StandardScaler()
-df_scaled = scaler.fit_transform(df_numeric)
-# Applying PCA
-pca = PCA()
-pca_result = pca.fit_transform(df_scaled)
-explained_variance = pca.explained_variance_ratio_.cumsum()
-num_components_95 = (explained_variance < 0.95).sum() + 1
-pca_loadings = abs(pca.components_[:num_components_95])
-feature_importance = np.sum(pca_loadings, axis=0)
-feature_importance_df = pd.DataFrame({'Feature': original_columns, 'Importance': feature_importance})
-feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
-selected_features = feature_importance_df.head(num_components_95)['Feature'].tolist()
-reduced_features = feature_importance_df.tail(len(original_columns) - num_components_95)['Feature'].tolist()
-print(f"Total original features: {len(original_columns)}")
-print(f"Number of Principal Components selected for 95% variance: {num_components_95}")
-print("Selected Features (Important in PCA):", selected_features)
-print("Reduced Features (Less Important in PCA):", reduced_features)
-X = df_numeric 
-X_selected = df_numeric[selected_features]
-y = df["status"] if "status" in df else np.random.randint(0, 2, size=len(df))
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-X_train_pca, X_test_pca, _, _ = train_test_split(X_selected, y, test_size=0.2, random_state=42)
-model = RandomForestClassifier()
-model.fit(X_train, y_train)
-accuracy_all_features = accuracy_score(y_test, model.predict(X_test))
-model.fit(X_train_pca, y_train)
-accuracy_pca_features = accuracy_score(y_test, model.predict(X_test_pca))
-plt.figure(figsize=(8, 5))
-plt.bar(["All Features", "PCA Features"], [accuracy_all_features, accuracy_pca_features], color=["blue", "green"])
-plt.ylim(0.9, 1.0)  # Adjust y-axis for better visibility
-plt.ylabel("Accuracy")
-plt.title("Accuracy Comparison: All Features vs PCA Selected Features")
-plt.grid(axis="y", linestyle="--", alpha=0.7)
-for i, acc in enumerate([accuracy_all_features, accuracy_pca_features]):
-    plt.text(i, acc + 0.001, f"{acc:.4f}", ha='center', fontsize=12, fontweight='bold')
+from sklearn.decomposition import PCA
+import warnings
+import os
 
-plt.show()
+# COMPLETELY SUPPRESS ALL WARNINGS INCLUDING NUMPY
+warnings.filterwarnings('ignore')
+os.environ['PYTHONWARNINGS'] = 'ignore'
+
+# Suppress numpy DLL warnings specifically
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning, module='numpy')
+
+class PhishingEDA:
+    def __init__(self, data_path):
+        self.data_path = data_path
+        self.df = None
+        self.load_data()
+    
+    def load_data(self):
+        """Load and preprocess the dataset"""
+        self.df = pd.read_csv(self.data_path)
+        self.df['status'] = self.df['status'].map({'phishing': 1, 'legitimate': 0})
+        print("✅ Dataset loaded successfully!")
+        print(f"Shape: {self.df.shape}")
+    
+    def basic_info(self):
+        """Display basic dataset information"""
+        print("\n" + "="*50)
+        print("BASIC DATASET INFORMATION")
+        print("="*50)
+        
+        print(f"Dataset Shape: {self.df.shape}")
+        print(f"\nMissing Values:\n{self.df.isnull().sum().sum()}")
+        print(f"Duplicate Rows: {self.df.duplicated().sum()}")
+        
+        print("\nData Types:")
+        print(self.df.dtypes.value_counts())
+        
+        print("\nTarget Variable Distribution:")
+        print(self.df['status'].value_counts())
+        print(f"Phishing Ratio: {self.df['status'].mean():.2%}")
+    
+    def visualize_distributions(self):
+        """Create comprehensive visualizations"""
+        print("\n" + "="*50)
+        print("DATA VISUALIZATIONS")
+        print("="*50)
+        
+        # Set up the plotting style
+        plt.style.use('default')
+        sns.set_palette("husl")
+        
+        # 1. Target distribution
+        fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+        
+        # Target variable
+        status_counts = self.df['status'].value_counts()
+        axes[0,0].pie(status_counts.values, labels=['Legitimate', 'Phishing'], 
+                     autopct='%1.1f%%', startangle=90)
+        axes[0,0].set_title('URL Status Distribution')
+        
+        # URL length distribution
+        sns.histplot(data=self.df, x='length_url', hue='status', ax=axes[0,1], bins=30)
+        axes[0,1].set_title('URL Length Distribution by Status')
+        
+        # Page rank comparison
+        sns.boxplot(data=self.df, x='status', y='page_rank', ax=axes[0,2])
+        axes[0,2].set_title('Page Rank vs URL Status')
+        axes[0,2].set_xticklabels(['Legitimate', 'Phishing'])
+        
+        # Number of dots
+        sns.boxplot(data=self.df, x='status', y='nb_dots', ax=axes[1,0])
+        axes[1,0].set_title('Number of Dots vs URL Status')
+        axes[1,0].set_xticklabels(['Legitimate', 'Phishing'])
+        
+        # Number of slashes
+        sns.boxplot(data=self.df, x='status', y='nb_slash', ax=axes[1,1])
+        axes[1,1].set_title('Number of Slashes vs URL Status')
+        axes[1,1].set_xticklabels(['Legitimate', 'Phishing'])
+        
+        # Domain age
+        sns.boxplot(data=self.df, x='status', y='domain_age', ax=axes[1,2])
+        axes[1,2].set_title('Domain Age vs URL Status')
+        axes[1,2].set_xticklabels(['Legitimate', 'Phishing'])
+        
+        plt.tight_layout()
+        plt.show()
+    
+    def correlation_analysis(self):
+        """Analyze feature correlations"""
+        print("\n" + "="*50)
+        print("CORRELATION ANALYSIS")
+        print("="*50)
+        
+        # Select numeric columns only
+        numeric_df = self.df.select_dtypes(include=[np.number])
+        
+        # Correlation with target
+        target_corr = numeric_df.corr()['status'].sort_values(ascending=False)
+        print("\nTop 10 Features Correlated with Target:")
+        print(target_corr.head(10))
+        
+        print("\nBottom 10 Features Correlated with Target:")
+        print(target_corr.tail(10))
+        
+        # Plot correlation heatmap for top 15 features
+        top_features = target_corr.abs().sort_values(ascending=False).head(15).index
+        corr_matrix = numeric_df[top_features].corr()
+        
+        plt.figure(figsize=(12, 10))
+        sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0,
+                   fmt='.2f', linewidths=0.5)
+        plt.title('Top 15 Features Correlation Heatmap')
+        plt.tight_layout()
+        plt.show()
+    
+    def pca_analysis(self):
+        """Perform PCA analysis for feature importance"""
+        print("\n" + "="*50)
+        print("PRINCIPAL COMPONENT ANALYSIS")
+        print("="*50)
+        
+        # Prepare data for PCA
+        X = self.df.select_dtypes(include=[np.number]).drop('status', axis=1)
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+        
+        # Perform PCA
+        pca = PCA()
+        pca.fit(X_scaled)
+        
+        # Plot explained variance
+        explained_variance = pca.explained_variance_ratio_
+        cumulative_variance = explained_variance.cumsum()
+        
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+        
+        # Scree plot
+        ax1.plot(range(1, len(explained_variance) + 1), explained_variance, 'bo-')
+        ax1.set_xlabel('Principal Components')
+        ax1.set_ylabel('Explained Variance Ratio')
+        ax1.set_title('Scree Plot')
+        ax1.grid(True)
+        
+        # Cumulative variance
+        ax2.plot(range(1, len(cumulative_variance) + 1), cumulative_variance, 'ro-')
+        ax2.axhline(y=0.95, color='g', linestyle='--', label='95% Variance')
+        ax2.set_xlabel('Number of Components')
+        ax2.set_ylabel('Cumulative Explained Variance')
+        ax2.set_title('Cumulative Explained Variance')
+        ax2.legend()
+        ax2.grid(True)
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # Feature importance from PCA
+        num_components = (cumulative_variance <= 0.95).sum() + 1
+        pca_loadings = abs(pca.components_[:num_components])
+        feature_importance = np.sum(pca_loadings, axis=0)
+        
+        feature_importance_df = pd.DataFrame({
+            'Feature': X.columns,
+            'Importance': feature_importance
+        }).sort_values('Importance', ascending=False)
+        
+        print(f"\nNumber of components explaining 95% variance: {num_components}")
+        print("\nTop 15 Most Important Features from PCA:")
+        print(feature_importance_df.head(15))
+        
+        # Plot top features
+        plt.figure(figsize=(10, 8))
+        top_features = feature_importance_df.head(15)
+        sns.barplot(data=top_features, y='Feature', x='Importance', palette='viridis')
+        plt.title('Top 15 Features by PCA Importance')
+        plt.tight_layout()
+        plt.show()
+        
+        return feature_importance_df
+    
+    def run_complete_analysis(self):
+        """Run complete EDA pipeline"""
+        print("🚀 STARTING COMPREHENSIVE EDA")
+        print("="*60)
+        
+        self.basic_info()
+        self.visualize_distributions()
+        self.correlation_analysis()
+        feature_importance_df = self.pca_analysis()
+        
+        print("\n" + "="*60)
+        print("✅ EDA COMPLETED SUCCESSFULLY!")
+        print("="*60)
+        
+        return feature_importance_df
+
+# Execute if run directly
+if __name__ == "__main__":
+    eda = PhishingEDA("dataset_phishing_updated.csv")
+    feature_importance_df = eda.run_complete_analysis()

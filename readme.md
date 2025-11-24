@@ -88,5 +88,5 @@ Requirements
      joblib
 ```
 ---
-🌐 **Live Demo:** [Phishing URL detection Web App](https://url-shield-detector.streamlit.app/)
+🌐 **Live Demo:** [Phishing URL detection Web App](https://phishing-url-classification.streamlit.app/)
 

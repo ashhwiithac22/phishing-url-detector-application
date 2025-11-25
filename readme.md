@@ -1,4 +1,4 @@
-## Phishing URL Detection Web Application 🔐
+### Phishing URL Detection Web Application 🔐
 
 - A Python-based web application that detects whether a URL is legitimate ✅ or phishing ❌ using machine learning.
 -  Built with Streamlit for an intuitive UI and trained with a feature-rich dataset of URLs.
